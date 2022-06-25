@@ -1,0 +1,14 @@
+baseURL = '/'
+languageCode = 'en-us'
+title = 'Oddly Specific Objects'
+theme = "hyde"
+
+[params]
+  copyright = "CC-BY-SA 4.0 Joey Castillo, except for the bear!"
+
+[Menus]
+  main = [
+      {Name = "About", URL = "/about/"},
+      {Name = "Products", URL = "/products/"},
+      {Name = "Projects", URL = "/projects/"}
+  ]

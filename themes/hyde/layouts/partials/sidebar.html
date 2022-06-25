@@ -1,0 +1,42 @@
+<aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <style>
+        @media (min-width: 48em) {
+          .logo-small {
+            display: none;
+          }
+          .logo-big {
+            display: block;
+          }
+        }
+        @media (max-width: 48em) {
+          .logo-small {
+            display: block;
+          }
+          .logo-big {
+            display: none;
+          }
+        }
+      </style>
+      <a href="{{ .Site.BaseURL }}"><img class="logo-big" src="/oso-bear.png"></a>
+      <a href="{{ .Site.BaseURL }}"><img class="logo-big" src="/oso-threeline.png"></a>
+      <a href="{{ .Site.BaseURL }}"><img class="logo-small" src="/oso-oneline.png"></a>
+      {{ if .Site.Params.description }}
+      <p class="lead">
+      {{ .Site.Params.description }}
+      </p>
+      {{- end }}
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        {{ range .Site.Menus.main -}}
+          <li><a href="{{.URL}}"> {{ .Name }} </a></li>
+        {{- end }}
+      </ul>
+    </nav>
+
+    <p>{{ with .Site.Params.copyright }}{{.}}{{ else }}&copy; {{ now.Format "2006"}}. All rights reserved. {{end}}</p>
+  </div>
+</aside>
