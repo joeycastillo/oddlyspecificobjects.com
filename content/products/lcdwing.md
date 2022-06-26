@@ -46,8 +46,8 @@ display.print("HELLO")
 ## Resources
 
 * [LCD FeatherWing CircuitPython library](https://github.com/joeycastillo/OSO_CircuitPython_LCD)
+* [Design files for LCD wing and custom LCD](https://github.com/joeycastillo/LCD-FeatherWing)
 * [BU9796 data sheet](bu9796axxx-e.pdf)
-* TODO: KiCad design files
 
 ---
 
@@ -65,7 +65,7 @@ Now, the voltage on A0 will define the LCD voltage according to the following fo
 
 ### SDA and SCL jumpers: alternate I²C bus
 
-The BU9796 has no address pins, so you can only drive one display on an I²C bus. However, some Feather boards can support two or even more I²C buses! By soldering wires to these pads and rerouting some signals, you can drive multuple LCD FeahterWings from one Feather. 
+The BU9796 has no address pins, so you can only drive one display on an I²C bus. However, some Feather boards can support two or even more I²C buses! By soldering wires to these pads and rerouting some signals, you can drive multiple LCD FeahterWings from one Feather.
 
 Please note: **THIS IS AN ADVANCED HACK** and it's easy to inadvertently cut a trace, pull a pad or knock off a surface mount resistor while doing this. Please only attempt this if you feel comfortable working in a very small area.
 
