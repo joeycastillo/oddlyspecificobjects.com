@@ -8,10 +8,10 @@ The LCD FeatherWing is a low-power display compatible with [Adafruit's Feather l
 
 * Five indicator icons: Bell, Wifi, Moon, Arrows and Battery
 * Five 7-segment digits, plus a sign indicator
-* Four decimal points, one between each pair of digits.
+* Four decimal points, one between each pair of digits
 * AM and PM indicators, plus a colon for displaying the time
 
-![A diagram of the display](/products/lcdwing/display.png)
+{{< figure src="/products/lcdwing/display.svg" >}}
 
 ## Assembly Instructions
 
@@ -41,6 +41,116 @@ from oso_lcd.lcdwing_lite import LCDWingLite
 
 display = LCDWingLite(board.I2C())
 display.print("HELLO")
+{{< /highlight >}}
+
+#### Character Set Notes
+
+The character set in the LCD FeatherWing library displays characters in mixed case in order to give each character a unique representation. Both uppercase and lowercase letters in your string display in the case chosen by the library; there is no difference between `display.print("ABCDE")` and `display.print("abcde")`. `A` appears as uppercase, but `B` and `D` appear as lowercase to distinguish them from the `8` and `0` characters:
+
+{{< figure src="/products/lcdwing/display-abcde.svg" >}}
+
+Similarly, `C` appears in lowercase to distinguish it from the open parenthesis `(`, as seen here when we `display.print("(789)")`:
+
+{{< figure src="/products/lcdwing/display-789.svg" >}}
+
+Some characters simply don't work well as a seven-segment digit. In this example, we've called `display.print("Wifi")` and `display.print("Main")`. The `W` appears as an upside down `A`, and the `M` appears as a tall `N`:
+
+{{< figure src="/products/lcdwing/display-aifi.svg" >}}
+
+{{< figure src="/products/lcdwing/display-nain.svg" >}}
+
+If you are willing to sacrifice two characters, you can display these letters using some two character codes: `$J` displays a `W`, and `&7` displays an `M`. So you could display "Wifi" by calling `display.print("$Jifi")`, or "Main" by calling `display.print("&7ain")`:
+
+{{< figure src="/products/lcdwing/display-wifi.svg" >}}
+
+{{< figure src="/products/lcdwing/display-main.svg" >}}
+
+Finally, there's one character that doesn't do what you would expect. Since the `#` symbol doesn't translate well to a 7-segment display, the library uses this character to display the degree symbol. So if you wanted to display a temperature of 72.4° F, you would do it like so: `display.print("72.4#F")`.
+
+{{< figure src="/products/lcdwing/display-temperature.svg" >}}
+
+#### The Colon
+
+When you call `display.print`, the LCD FeatherWing library automatically sets the colon if there is a colon in the appropriate spot (usually the third character in a string). So, for example, calling `display.print("12:34")` will set the colon. 
+
+{{< figure src="/products/lcdwing/display-12_34.svg" >}}
+
+However, calling `display.print("1:23")` will not set the colon.
+
+{{< figure src="/products/lcdwing/display-123.svg" >}}
+
+Instead, add a space before: `display.print(" 1:23")`. The additional space at the beginning of the string pushes the colon to the correct spot.
+
+{{< figure src="/products/lcdwing/display-1_23.svg" >}}
+
+There is also a special method to toggle the colon. Call `display.toggle_colon()` and it will set the colon to the opposite of its current state: if it was on, it turns off, and if it was off it turns on. Calling this method twice a second is a good way to display a clock ticking.
+
+#### Sign Indicator and Decimal Points
+
+If the first character in your string is a minus sign (`-`), the LCD FeatherWing library will set the sign indicator to the left of the digits instead of putting the sign in the first digit. This means that you can display any number from -99999 to 99999. 
+
+{{< figure src="/products/lcdwing/display-neg99999.svg" >}}
+
+{{< figure src="/products/lcdwing/display-99999.svg" >}}
+
+It also means that if you are using the colon, it will be expected in the fourth position instead of the third, as in this countdown clock: `display.print("-10:00.0")`.
+
+{{< figure src="/products/lcdwing/display-countdown.svg" >}}
+
+There are four decimal points, one between each digit. The LCD FeatherWing library will automatically set the appropriate decimal point if it is included in your string, unless it occurs before the first digit or after the last one. This is because there is no decimal point to the left of the first digit or the right of the last one. So, for example, `display.print(".1234")` will display incorrectly, but `display.print("0.1234")` will work. Similarly, `display.print("Thurs.")` will omit the period at the end, but `display.print("Thur.")` will display it.
+
+{{< figure src="/products/lcdwing/display-01234.svg" >}}
+
+{{< figure src="/products/lcdwing/display-thur.svg" >}}
+
+#### Indicator Icons
+
+There are seven indicators on the LCD, including five icons as well as the AM and PM indicators on the right.
+
+{{< figure src="/products/lcdwing/display-indicators.svg" >}}
+
+You can control these indicators using the `set_indicator` and `clear_indicator` methods. The indicators are defined in the `Indicator` class in the `lcdwing_lite` module. Their definitions, clockwise from top left:
+
+* `Indicator.BELL`
+* `Indicator.WIFI`
+* `Indicator.AM`
+* `Indicator.PM`
+* `Indicator.BATTERY`
+* `Indicator.DATA` (the paired arrows)
+* `Indicator.MOON`
+
+There is also a special value, `Indicator.ALL`, that is useful to clear all indicators at once: `display.clear_indicator(Indicator.ALL)`.
+
+#### Putting It All Together: Simple Clock App
+
+{{< figure src="/products/lcdwing/display-clock.svg" >}}
+
+This Python script is available in the examples folder of the LCD FeatherWing CircuitPython library. It's a simple clock that uses CircuitPython's built-in RTC module to display the current time. 
+
+{{< highlight python >}}
+import board
+import time
+import rtc
+from oso_lcd.lcdwing_lite import LCDWingLite, Indicator
+
+display = LCDWingLite(board.I2C())
+minute = None
+clock = rtc.RTC()
+clock.datetime = time.struct_time((2022, 6, 30, 11, 59, 55, 0, -1, -1))
+
+while True:
+    if minute != clock.datetime.tm_min:
+        dt = clock.datetime
+        hour = dt.tm_hour % 12
+        minute = dt.tm_min
+        display.clear_indicator(Indicator.ALL)
+        display.print("{:2d}:{:02d}".format(hour if hour else 12, minute))
+        if dt.tm_hour < 12:
+            display.set_indicator(Indicator.AM)
+        else:
+            display.set_indicator(Indicator.PM)
+    display.toggle_colon()
+    time.sleep(0.5)
 {{< /highlight >}}
 
 ## Resources
