@@ -2,9 +2,9 @@
 title = "LCD FeatherWing"
 description =  ""
 +++
-![A rendering of the LCD FeatherWing](/products/lcdwing/lcdwing.png)
+![A photo of the LCD FeatherWing](/products/lcdwing/lcdwing.png)
 
-The LCD FeatherWing is a low-power display compatible with [Adafruit's Feather line of development boards](https://www.adafruit.com/category/830). It uses the BU9796 segment LCD controller to drive a custom liquid crystal display glass with 48 segments, including: 
+[The LCD FeatherWing](https://www.tindie.com/products/joeycastillo/lcd-featherwing/) is a low-power display compatible with [Adafruit's Feather line of development boards](https://www.adafruit.com/category/830). It uses the BU9796 segment LCD controller to drive a custom liquid crystal display glass with 48 segments, including: 
 
 * Five indicator icons: Bell, Wifi, Moon, Arrows and Battery
 * Five 7-segment digits, plus a sign indicator
